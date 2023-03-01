@@ -1,0 +1,17 @@
+{
+    "name": "sdsdsd",
+    "price": 8787,
+    "description": "sdsdsd",
+    "ratings": 45,
+    "images": [
+        {
+            "public_id": "dssdsd",
+            "url": "dfdskfjdf"
+        }
+    ],
+    "catergory": "Electronics",
+    "seller":"Sdsdsdf",
+    "stock": 4545,
+    "numOfReviews": 545,
+    "reviews": []
+   }
