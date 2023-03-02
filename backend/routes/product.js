@@ -7,7 +7,7 @@ const { getProducts,
     updateProduct,  
     deleteProduct } = require('../controllers/productController')
 
-
+// console.log("hellop")
 router.route('/products').get(getProducts);
 // router.route('/product/new').post(newProduct);
 router.post("/admin/products/new", newProduct);
