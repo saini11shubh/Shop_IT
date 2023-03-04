@@ -1,6 +1,6 @@
 const Product = require('../models/product');
-const ErrorHandler=require('../utils/errorHandler')
-const catchAsyncErrors=require('../middlewares/catchAsyncErrors');
+const ErrorHandler = require('../utils/errorHandler')
+const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
 const APIFeatures = require('../utils/apiFeatures')
 
 exports.newProduct = async (req, res, next) => {
@@ -14,13 +14,17 @@ exports.newProduct = async (req, res, next) => {
 
 //Get all products => /api/v1/products
 exports.getProducts = catchAsyncErrors(async (req, res, next) => {
-    // console.log("kkkkkkkkkk");
-    const apiFeatures=new APIFeatures(Product.find(),req.query).search().filter()
+    console.log("kkkkkkkkkk");
+    const resPerPage = 4;
+    const productCount = await Product.countDocuments();
+    console.log(productCount);
+    const apiFeatures = new APIFeatures(Product.find(), req.query).search().filter().pagination(resPerPage)
     console.log(apiFeatures);
     const products = await Product.find();
     res.status(200).json({
         status: true,
         message: "This route will show all products in database.",
+        productCount,
         products
     })
 })
@@ -29,9 +33,9 @@ exports.getProducts = catchAsyncErrors(async (req, res, next) => {
 exports.getSingleProduct = catchAsyncErrors(async (req, res, next) => {
     const product = await Product.findById(req.params.id);
     if (!product) {
-        return next(new ErrorHandler('Product not found',404));
+        return next(new ErrorHandler('Product not found', 404));
     }
-     res.status(200).json({
+    res.status(200).json({
         success: true,
         message: 'Product found',
         product
@@ -74,7 +78,7 @@ exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
         })
     }
 
-   await product.remove();
+    await product.remove();
     return res.status(200).json({
         success: true,
         message: 'Data Deleted',

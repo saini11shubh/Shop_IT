@@ -7,7 +7,11 @@ app.use(express.json())
 //Import all routes
 const products=require('./routes/product');
 
+const auth =require('./routes/auth');
+
 app.use('/',products)
+
+app.use('/auth',auth)
 
 app.use(errorMiddleware);
 
