@@ -17,7 +17,7 @@ class APIFeatures {
     }
 
     filter() {
-        const queryCopy = { ...this.queryStr };
+        var queryCopy = { ...this.queryStr };
         console.log(queryCopy);
         // console.log("----------------------------");
         //Removing fields from the query

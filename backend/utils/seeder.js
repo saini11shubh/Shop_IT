@@ -1,15 +1,15 @@
-const Product=require('../models/product')
-const dotenv=require('dotenv')
-const connectDatabase=require('../config/database')
+const Product = require('../models/product')
+const dotenv = require('dotenv')
+const connectDatabase = require('../config/database')
 
-const products=require('../data/product.json')
+const products = require('../data/product.json')
 
 //setting dotenv file
-dotenv.config({path:'backend/config/config.env'})
+dotenv.config({ path: 'backend/config/config.env' })
 
 connectDatabase();
 
-const seedProducts=async()=>{
+const seedProducts = async () => {
     try {
         await Product.deleteMany();
         console.log('Products are deleted')
@@ -23,4 +23,3 @@ const seedProducts=async()=>{
         process.exit();
     }
 }
- 

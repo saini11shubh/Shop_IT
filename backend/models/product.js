@@ -88,4 +88,4 @@ const productSchema = new mongoose.Schema({
         default: Date.now
     }
 })
-module.exports=new mongoose.model("Product",productSchema)
+module.exports = new mongoose.model("Product", productSchema)
