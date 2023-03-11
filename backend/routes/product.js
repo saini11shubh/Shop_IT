@@ -8,17 +8,17 @@ const { getProducts,
     deleteProduct
 } = require('../controllers/productController')
 
-const { isAuthenticatedUser } = require('../middlewares/auth')
+const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth')
 
 // console.log("hellop")
-router.route('/products').get(isAuthenticatedUser, getProducts);
+router.route('/products').get(getProducts);
 // router.route('/product/new').post(newProduct);
-router.post("/admin/products/new", isAuthenticatedUser, newProduct);
+router.post("/admin/products/new", isAuthenticatedUser, authorizeRoles('admin'), newProduct);
 
 router.get('/products/:id', getSingleProduct);
 
-router.put('/admin/products/:id', isAuthenticatedUser, updateProduct);
+router.put('/admin/products/:id', isAuthenticatedUser, authorizeRoles('admin'), updateProduct);
 
-router.delete('/admin/products/:id', isAuthenticatedUser, deleteProduct);
+router.delete('/admin/products/:id', isAuthenticatedUser, authorizeRoles('admin'), deleteProduct);
 
-module.exports = router;
+module.exports = router;  
