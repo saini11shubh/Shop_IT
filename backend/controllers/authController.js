@@ -149,6 +149,25 @@ exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
     sendToken(user, 200, res)
 })
 
+//Register a user => /me/update
+exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
+    const newUserData ={
+        name: req.body.name,
+        email: req.body.email
+    }
+    console.log("----------------")
+console.log(newUserData)
+    //Update avatar: TODO
+    const user = await User.findByIdAndUpdate(req.user.id, newUserData);
+
+    console.log(user);
+    // res.status(201).json({user,token});
+    res.status(200).json({
+        success: true
+    });
+    // sendToken(user, 200,res)
+});
+
 
 exports.logout = catchAsyncErrors(async (req, res, next) => {
     res.cookie('token', null, {
@@ -161,3 +180,59 @@ exports.logout = catchAsyncErrors(async (req, res, next) => {
         message: 'Logged out successfully'
     })
 })
+
+//admin  Routes
+//Get All users => /admin/users
+exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
+    const users = await User.find();
+    res.status(200).json({
+        success: true,
+        users
+    })
+})
+
+//Get user details => /admin/user/:id
+exports.getUserDetails = catchAsyncErrors(async (req, res, next)=> {
+ const user = await User.findById(req.params.id);
+
+ if (!user) {
+    return next(new ErrorHandler('User not found', 404));
+ }
+ res.status(200).json({
+    success: true,
+    user
+ });
+})
+
+//Register a user => /admin/user/:id
+exports.updateUser = catchAsyncErrors(async (req, res, next) => {
+    const newUserData ={
+        name: req.body.name,
+        email: req.body.email,
+        role: req.body.role
+    }
+ 
+    //Update avatar: TODO
+    const user = await User.findByIdAndUpdate(req.params.id, newUserData);
+
+    console.log(user);
+    // res.status(201).json({user,token});
+    res.status(200).json({
+        success: true
+    });
+    // sendToken(user, 200,res)
+});
+
+//Delete user  => /admin/user/:id
+exports.deleteUser = catchAsyncErrors(async (req, res, next)=> {
+    const user = await User.findById(req.params.id);
+   
+    if (!user) {
+       return next(new ErrorHandler('User not found', 404));
+    }
+    //Remove avtaar from cloudinary TODO
+    await user.remove();
+    res.status(200).json({
+       success: true
+    });
+   })
