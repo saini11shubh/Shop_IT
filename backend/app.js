@@ -10,12 +10,12 @@ app.use(cookieParser())
 
 //Import all routes
 const products = require('./routes/product');
-
 const auth = require('./routes/auth');
+const order=require('./routes/order');
 
 app.use('/', products)
-
 app.use('/auth', auth)
+app.use('/auth', order)
 
 app.use(errorMiddleware);
 
