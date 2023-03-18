@@ -6,8 +6,8 @@ const APIFeatures = require('../utils/apiFeatures')
 exports.newProduct = async (req, res, next) => {
     console.log('Product');
     console.log(req.user.id);
-    req.body.user=req.user.id;
-    
+    req.body.user = req.user.id;
+
     console.log(req.body.user);
     const product = await Product.create(req.body);
     res.status(201).json({
@@ -87,5 +87,85 @@ exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
         success: true,
         message: 'Data Deleted',
         product
+    })
+})
+
+//create new review  =>  /review
+exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
+    const { rating, comment, productId } = req.body;
+
+    const review = {
+        user: req.user._id,
+        name: req.user.name,
+        rating: Number(rating),
+        comment
+    }
+    console.log(review)
+    const product = await Product.findById(productId);
+    console.log(product)
+    const isReviewed = product.reviews.find(r => r.user.toString() === req.user._id.toString())
+    console.log("---------------")
+    console.log(isReviewed)
+    console.log("---------------")
+    console.log(product.reviews.length)
+    if (isReviewed) {
+        product.reviews.forEach(review => {
+            if (review.user.toString() === req.user._id.toString()) {
+                review.comment = comment;
+                review.rating = rating;
+            }
+        })
+    }
+    else {
+        product.reviews.push(review);
+        product.numofReviews = product.reviews.length
+    }
+
+    //calculate overall rating
+    product.ratings = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length
+    console.log("================product rating==========")
+    console.log(product.ratings)
+    await product.save({ validateBeforesave: false })
+
+    res.status(200).json({
+        success: true
+    })
+})
+
+//Get product reviews => /reviews
+exports.getProductsReviews = catchAsyncErrors(async (req, res, next) => {
+    const product = await Product.findById(req.query.productId);
+
+    res.status(200).json({
+        success: true,
+        reviews: product.reviews
+    })
+})
+
+//Get product reviews => /deleteReview
+exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
+    const product = await Product.findById(req.query.productId);
+
+    const reviews = product.reviews.filter(review => review._id.toString() !== req.query.id.toString());
+
+    const numOfReviews = reviews.length;
+
+    const ratings = product.reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length
+    console.log("================product");
+    console.log(product);
+    console.log(ratings);
+    await Product.findByIdAndUpdate(req.query.productId, {
+        reviews,
+        ratings,
+        numOfReviews
+    }, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false
+    })
+
+    res.status(200).json({
+        success: true,
+        reviews: product.reviews
     })
 })
